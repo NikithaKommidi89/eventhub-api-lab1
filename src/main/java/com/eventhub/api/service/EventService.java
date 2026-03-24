@@ -1,49 +1,21 @@
 package com.eventhub.api.service;
 
-import com.eventhub.api.model.Event;
-import org.springframework.stereotype.Service;
-
+import com.eventhub.api.dto.EventDTO;
+import com.eventhub.api.dto.PageResponse;
+import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
 
-@Service
-public class EventService {
+public interface EventService {
 
-    private final Map<Long, Event> eventStore = new HashMap<>();
-    private final AtomicLong idGenerator = new AtomicLong();
+    PageResponse<EventDTO> getEvents(Long categoryId, Double minPrice,
+                                     Double maxPrice, LocalDateTime startDate,
+                                     LocalDateTime endDate, Pageable pageable);
 
-    public List<Event> getAllEvents() {
-        return new ArrayList<>(eventStore.values());
-    }
+    EventDTO getEventById(Long id);
 
-    public Event getEventById(Long id) {
-        return eventStore.get(id);
-    }
+    EventDTO createEvent(EventDTO dto);
 
-    public Event createEvent(Event event) {
-        Long id = idGenerator.incrementAndGet();
-        event.setId(id);
-        event.setCreatedAt(LocalDateTime.now());
-        event.setUpdatedAt(LocalDateTime.now());
-        eventStore.put(id, event);
-        return event;
-    }
+    EventDTO updateEvent(Long id, EventDTO dto);
 
-    public Event updateEvent(Long id, Event event) {
-        Event existing = eventStore.get(id);
-        if (existing == null) {
-            return null;
-        }
-
-        event.setId(id);
-        event.setCreatedAt(existing.getCreatedAt());
-        event.setUpdatedAt(LocalDateTime.now());
-        eventStore.put(id, event);
-        return event;
-    }
-
-    public void deleteEvent(Long id) {
-        eventStore.remove(id);
-    }
+    void deleteEvent(Long id);
 }

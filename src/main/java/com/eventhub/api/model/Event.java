@@ -2,18 +2,39 @@ package com.eventhub.api.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "events")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Event {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+
+    @NotBlank(message = "Event title is required")
+    @Size(min = 3, max = 100, message = "Event title must be between 3 and 100 characters")
+    @Column(nullable = false)
+    private String title;
+
+    @Size(max = 1000, message = "Description cannot exceed 1000 characters")
     private String description;
+
+    @NotNull(message = "Ticket price is required")
+    @DecimalMin(value = "0.0", message = "Ticket price must be 0 or positive")
+    @Column(nullable = false)
     private Double ticketPrice;
-    private String category;
-    private Boolean isActive;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id")
+    @NotNull(message = "Category is required")
+    private Category category;
+
+    private Boolean isActive = true;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
@@ -24,22 +45,6 @@ public class Event {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedAt;
 
-    public Event(Long id, String name, String description,
-                 Double ticketPrice, String category,
-                 Boolean isActive, LocalDateTime eventDate,
-                 LocalDateTime createdAt, LocalDateTime updatedAt) {
-
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.ticketPrice = ticketPrice;
-        this.category = category;
-        this.isActive = isActive;
-        this.eventDate = eventDate;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
-
     public Event() {
     }
 
@@ -47,86 +52,71 @@ public class Event {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public Double getTicketPrice() {
-        return ticketPrice;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public Boolean getActive() {
-        return isActive;
-    }
-
-    public LocalDateTime getEventDate() {
-        return eventDate;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Double getTicketPrice() {
+        return ticketPrice;
     }
 
     public void setTicketPrice(Double ticketPrice) {
         this.ticketPrice = ticketPrice;
     }
 
-    public void setCategory(String category) {
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public Boolean getActive() {
+        return isActive;
     }
 
     public void setActive(Boolean active) {
         isActive = active;
     }
 
+    public LocalDateTime getEventDate() {
+        return eventDate;
+    }
+
     public void setEventDate(LocalDateTime eventDate) {
         this.eventDate = eventDate;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
-    @Override
-    public String toString() {
-        return "Event{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", ticketPrice=" + ticketPrice +
-                ", category='" + category + '\'' +
-                ", isActive=" + isActive +
-                ", eventDate=" + eventDate +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
