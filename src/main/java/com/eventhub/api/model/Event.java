@@ -26,7 +26,7 @@ public class Event {
 
     @NotNull(message = "Ticket price is required")
     @DecimalMin(value = "0.0", message = "Ticket price must be 0 or positive")
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "DECIMAL(10,8)")
     private Double ticketPrice;
 
     @ManyToOne(fetch = FetchType.EAGER)
