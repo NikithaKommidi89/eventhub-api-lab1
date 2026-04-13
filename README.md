@@ -1,4 +1,4 @@
-# EventHub API - Assignment 2
+# EventHub API - Assignment 
 
 Spring Boot REST API for managing events, categories, users, and registrations with MySQL database integration and Flyway migrations.
 
