@@ -169,6 +169,58 @@ Deletes a registration by ID.
 
 ---
 
+### AI Integration
+Step1: Get Gemini API Key
+•	Go to Google AI platform
+•	Generate a Gemini API key from your account
+•	Copy the API key securely
+Step2: Set Environment Variable
+1.	The API key must NOT be hardcoded in the project. It should be stored as an environment variable.
+Step 3: Configure application.properties
+2.	Ensure the following configuration is present in your application.properties file:
+3.	spring.ai.vertex.ai.gemini.api-key=${GEMINI_API_KEY}
+4.	Model spring.ai.google.genai.chat.options.model=gemini-2.5-flash
+5.	This allows the application to securely read the API key.
+Step 4: Add Required Dependencies
+Ensure that Spring AI dependencies are added in pom.xml for Gemini integration.
+
+Step 5: Run the Application
+mvn spring-boot:run
+Expected response:
+AI service is running
+
+## 1. Health Check
+GET /api/ai/health
+Check AI service health.
+## 2. Search FAQs (Semantic Search)
+POST /api/ai/faq/search
+Search FAQs semantically based on user query.
+## 3. Load FAQ Data
+POST /api/ai/faq/load
+Load FAQ entries into vector store.
+## 4. Ask Question (RAG)
+POST /api/ai/faq/ask
+Ask a question using RAG-based AI.
+## 5. Suggest Event Tags
+POST /api/ai/events/tags
+Generate relevant event tags.
+## 6. Generate Event Schedule
+POST /api/ai/events/schedule
+Generate event schedule for multi-session events.
+## 7. Generate Event Description
+POST /api/ai/events/description
+Generate marketing event description.
+## 8. Generate Structured Event Description
+POST /api/ai/events/description/structured
+Generate structured event details (title, description, highlights, etc.).
+## 9. General AI Chat
+POST /api/ai/chat
+General-purpose AI chat endpoint.
+
+
+
+
+
 ### Health Check
 
 **22. Health Check**
@@ -183,6 +235,11 @@ Example Response:
   "environment": "Development"
 }
 ```
+
+Verify AI Integration
+Test the following endpoint using Postman and Swagger:
+•	GET /ai/health
+
 
 ---
 
