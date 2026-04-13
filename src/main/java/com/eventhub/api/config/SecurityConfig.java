@@ -1,5 +1,6 @@
-package com.eventhub.api.security;
+package com.eventhub.api.config;
 
+import com.eventhub.api.security.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -43,36 +44,43 @@ public class SecurityConfig {
                 .sessionManagement(s -> s
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Public
-                        .requestMatchers("/api/auth/**").permitAll()
+                        //  Swagger - must be first
                         .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/swagger-ui.html").permitAll()
                         .requestMatchers("/api-docs/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**").permitAll()
+                        .requestMatchers("/webjars/**").permitAll()
+                        // Public endpoints
+                        .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/health").permitAll()
                         .requestMatchers(HttpMethod.GET,
-                                "/api/v1/events/**")
-                        .permitAll()
+                                "/api/v1/events/**").permitAll()
                         .requestMatchers(HttpMethod.GET,
-                                "/api/categories/**")
-                        .permitAll()
-                        // USER
+                                "/api/categories/**").permitAll()
+
+                        .requestMatchers("/api/ai/**").permitAll()
+
+                         //  USER role
                         .requestMatchers("/api/registrations/**")
                         .hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
-                        // ADMIN
+                        //  ADMIN role
                         .requestMatchers(HttpMethod.POST,
-                                "/api/v1/events/**")
-                        .hasAuthority("ROLE_ADMIN")
+                                "/api/v1/events/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.PUT,
-                                "/api/v1/events/**")
-                        .hasAuthority("ROLE_ADMIN")
+                                "/api/v1/events/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.DELETE,
-                                "/api/v1/events/**")
-                        .hasAuthority("ROLE_ADMIN")
-                        .requestMatchers("/api/users/**")
-                        .hasAuthority("ROLE_ADMIN")
-                        .anyRequest().authenticated())
-                .addFilterBefore(jwtAuthFilter,
-                        UsernamePasswordAuthenticationFilter.class);
+                                "/api/v1/events/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/api/users/**")         .hasAuthority("ROLE_ADMIN")
+                                        .anyRequest().authenticated()
+                        )
+                        .addFilterBefore(jwtAuthFilter,
+                                UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
+
+
+
+
 }
